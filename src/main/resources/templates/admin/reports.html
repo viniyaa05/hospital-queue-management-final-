@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Reports &amp; Analytics</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="layout">
+    <div th:replace="~{fragments :: admin-sidebar}"></div>
+    <div class="main-content">
+        <div class="page-title">
+            📈 Reports &amp; Analytics
+            <div class="page-subtitle">Today's statistics and hospital performance</div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="stats-grid">
+            <div class="stat-card green">
+                <div class="stat-number" th:text="${todayPatients}">0</div>
+                <div class="stat-label">Patients Registered Today</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${todayTokens}">0</div>
+                <div class="stat-label">Tokens Issued Today</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-number" th:text="${todayAppointments}">0</div>
+                <div class="stat-label">Appointments Today</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-number"
+                     th:text="${avgWaitingTime != null ? #numbers.formatDecimal(avgWaitingTime, 1, 1) + ' min' : 'N/A'}">0</div>
+                <div class="stat-label">Avg Waiting Time</div>
+            </div>
+        </div>
+
+        <!-- Tokens per Department -->
+        <div class="card">
+            <div class="card-header">📊 Tokens Per Department (Today)</div>
+            <div th:if="${tokensPerDept.empty}" class="card-body text-muted">No data available</div>
+            <div class="table-wrap" th:if="${!tokensPerDept.empty}">
+                <table>
+                    <thead><tr><th>Department</th><th>Tokens</th><th>Bar Chart</th></tr></thead>
+                    <tbody>
+                        <tr th:each="entry : ${tokensPerDept}">
+                            <td th:text="${entry.key}"></td>
+                            <td><strong th:text="${entry.value}"></strong></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:0.5rem;">
+                                    <div th:style="'width:' + ${entry.value * 15} + 'px; min-width:4px; max-width:200px; height:18px; background:var(--primary); border-radius:3px;'"></div>
+                                    <span class="text-muted fs-sm" th:text="${entry.value}"></span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- All Patients -->
+        <div class="card">
+            <div class="card-header">
+                👥 All Registered Patients
+                <span style="margin-left:auto; font-size:0.82rem; color:var(--muted);"
+                      th:text="'Total: ' + ${allPatients.size()}"></span>
+            </div>
+            <div th:if="${allPatients.empty}" class="empty-state card-body"><p>No patients registered yet.</p></div>
+            <div class="table-wrap" th:if="${!allPatients.empty}">
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Phone</th><th>Priority</th><th>Registered</th></tr></thead>
+                    <tbody>
+                        <tr th:each="p : ${allPatients}">
+                            <td th:text="${p.id}"></td>
+                            <td th:text="${p.name}"></td>
+                            <td th:text="${p.age}"></td>
+                            <td th:text="${p.gender}"></td>
+                            <td th:text="${p.phone}"></td>
+                            <td>
+                                <span class="badge badge-emergency" th:if="${p.priority.name() == 'EMERGENCY'}">EMERGENCY</span>
+                                <span class="badge badge-high"      th:if="${p.priority.name() == 'HIGH'}">HIGH</span>
+                                <span class="badge badge-normal"    th:if="${p.priority.name() == 'NORMAL'}">NORMAL</span>
+                            </td>
+                            <td th:text="${#temporals.format(p.registeredAt, 'dd MMM yyyy, hh:mm a')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

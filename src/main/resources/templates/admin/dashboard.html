@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="layout">
+    <div th:replace="~{fragments :: admin-sidebar}"></div>
+    <div class="main-content">
+
+        <div class="page-title">
+            📊 Admin Dashboard
+            <div class="page-subtitle">Hospital operations overview for today</div>
+        </div>
+
+        <div th:replace="~{fragments :: flash}"></div>
+
+        <!-- KPI Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" th:text="${totalDepartments}">0</div>
+                <div class="stat-label">Departments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" th:text="${totalDoctors}">0</div>
+                <div class="stat-label">Doctors</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-number" th:text="${todayPatients}">0</div>
+                <div class="stat-label">Patients Today</div>
+            </div>
+            <div class="stat-card orange">
+                <div class="stat-number" th:text="${todayTokens}">0</div>
+                <div class="stat-label">Tokens Today</div>
+            </div>
+            <div class="stat-card teal">
+                <div class="stat-number" th:text="${todayAppointments}">0</div>
+                <div class="stat-label">Appointments Today</div>
+            </div>
+            <div class="stat-card red">
+                <div class="stat-number" th:text="${#numbers.formatDecimal(avgWaitingTime, 1, 1)} + ' min'">0</div>
+                <div class="stat-label">Avg Wait Time</div>
+            </div>
+        </div>
+
+        <!-- Tokens per Department -->
+        <div class="card">
+            <div class="card-header">📈 Today's Tokens by Department</div>
+            <div th:if="${tokensPerDept.empty}" class="empty-state card-body">
+                <p>No tokens issued today yet.</p>
+            </div>
+            <div class="table-wrap" th:if="${!tokensPerDept.empty}">
+                <table>
+                    <thead><tr><th>Department</th><th>Tokens Issued</th><th>Visual</th></tr></thead>
+                    <tbody>
+                        <tr th:each="entry : ${tokensPerDept}">
+                            <td th:text="${entry.key}"></td>
+                            <td th:text="${entry.value}"></td>
+                            <td>
+                                <div style="height:14px; background:var(--primary); border-radius:3px;"
+                                     th:style="'width:' + ${entry.value * 20} + 'px; height:14px; background:var(--primary); border-radius:3px; max-width:200px;'"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">⚡ Quick Actions</div>
+            <div class="card-body" style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+                <a th:href="@{/admin/departments}" class="btn btn-primary">🏢 Manage Departments</a>
+                <a th:href="@{/admin/doctors}"     class="btn btn-primary">👨‍⚕️ Manage Doctors</a>
+                <a th:href="@{/admin/reports}"     class="btn btn-info">📈 Full Reports</a>
+                <a th:href="@{/patient/register}"  class="btn btn-success">➕ Register Patient</a>
+                <a th:href="@{/queue/display}"     class="btn btn-light">🖥️ Queue Board</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

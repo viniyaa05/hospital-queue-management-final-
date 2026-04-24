@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Queue Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="layout">
+    <div th:replace="~{fragments :: doctor-sidebar}"></div>
+    <div class="main-content">
+        <div class="page-title">📋 Queue Management</div>
+
+        <div th:replace="~{fragments :: flash}"></div>
+
+        <!-- Counter selector tabs -->
+        <div class="counter-tabs">
+            <a th:each="c : ${counters}"
+               th:href="@{/doctor/queue(counter=${c})}"
+               th:text="${c.displayName}"
+               th:classappend="${c == selectedCounter} ? ' active' : ''"
+               class="counter-tab"></a>
+        </div>
+
+        <!-- Call Next Button -->
+        <div class="card">
+            <div class="card-body d-flex align-center gap-1" style="flex-wrap:wrap;">
+                <div>
+                    <strong th:text="${selectedCounter.displayName}"></strong> Counter &nbsp;·&nbsp;
+                    <span th:text="${queue.size()}"></span> waiting
+                    <span th:if="${currentlyServing != null}">
+                        &nbsp;·&nbsp; Serving: <strong th:text="${currentlyServing.tokenCode}"></strong>
+                    </span>
+                </div>
+                <div style="margin-left:auto;">
+                    <form th:action="@{/doctor/call-next}" method="post" style="display:inline;">
+                        <input type="hidden" name="counter" th:value="${selectedCounter}">
+                        <button type="submit" class="btn btn-primary">📢 Call Next</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Currently Serving -->
+        <div th:if="${currentlyServing != null}" class="card" style="border-top:4px solid var(--success);">
+            <div class="card-header">🟢 Now Serving</div>
+            <div class="card-body d-flex align-center gap-1" style="flex-wrap:wrap;">
+                <div style="font-size:2rem; font-weight:900; color:var(--success);"
+                     th:text="${currentlyServing.tokenCode}">–</div>
+                <div style="flex:1;">
+                    <div th:text="${currentlyServing.patient.name}"></div>
+                    <div class="text-muted fs-sm" th:text="'Age ' + ${currentlyServing.patient.age} + ' · ' + ${currentlyServing.patient.gender}"></div>
+                </div>
+                <form th:action="@{/doctor/token/update}" method="post" style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
+                    <input type="hidden" name="tokenId" th:value="${currentlyServing.id}">
+                    <input type="hidden" name="counter" th:value="${selectedCounter}">
+                    <input type="text" class="form-control" name="notes" placeholder="Notes" style="max-width:200px;">
+                    <button type="submit" name="status" value="COMPLETED" class="btn btn-success btn-sm">✅ Complete</button>
+                    <button type="submit" name="status" value="SKIPPED"   class="btn btn-warning btn-sm">⏭️ Skip</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Full Queue Table -->
+        <div class="card">
+            <div class="card-header">⏳ Waiting — <span th:text="${selectedCounter.displayName}"></span></div>
+            <div th:if="${queue.empty}" class="empty-state" style="padding:2rem;">
+                <div class="empty-icon">✅</div><p>Queue is empty!</p>
+            </div>
+            <div class="table-wrap" th:if="${!queue.empty}">
+                <table>
+                    <thead><tr><th>Pos</th><th>Token</th><th>Patient</th><th>Phone</th><th>Age</th><th>Priority</th><th>Since</th></tr></thead>
+                    <tbody>
+                        <tr th:each="t,i : ${queue}"
+                            th:style="${t.priority.name() == 'EMERGENCY'} ? 'background:#fff5f5;' : (${t.priority.name() == 'HIGH'} ? 'background:#fffde7;' : '')">
+                            <td th:text="${i.index + 1}"></td>
+                            <td><strong th:text="${t.tokenCode}"></strong></td>
+                            <td th:text="${t.patient.name}"></td>
+                            <td th:text="${t.patient.phone}"></td>
+                            <td th:text="${t.patient.age}"></td>
+                            <td>
+                                <span class="badge badge-emergency" th:if="${t.priority.name() == 'EMERGENCY'}">🚨 EMERGENCY</span>
+                                <span class="badge badge-high"      th:if="${t.priority.name() == 'HIGH'}">⭐ HIGH</span>
+                                <span class="badge badge-normal"    th:if="${t.priority.name() == 'NORMAL'}">NORMAL</span>
+                            </td>
+                            <td th:text="${#temporals.format(t.createdAt, 'hh:mm a')}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

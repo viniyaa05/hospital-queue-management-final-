@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login – Hospital Queue System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-logo">
+            <div class="logo-icon">🏥</div>
+            <h1>Hospital Queue System</h1>
+            <p>Staff Login Portal</p>
+        </div>
+
+        <div th:if="${param.error}" class="alert alert-error">
+            Invalid username or password. Please try again.
+        </div>
+        <div th:if="${param.logout}" class="alert alert-success">
+            You have been logged out successfully.
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label class="form-label" for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-control"
+                       placeholder="Enter your username" required autofocus>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top:0.5rem;">
+                🔐 Login
+            </button>
+        </form>
+
+        <div class="mt-2 text-center fs-sm text-muted">
+            <a th:href="@{/}">← Back to Home</a>
+        </div>
+
+        <div class="card mt-3" style="background:#f8f9fa; box-shadow:none; border:1px solid #dee2e6;">
+            <div class="card-body fs-sm text-muted">
+                <strong>Default Credentials:</strong><br>
+                Admin: <code>admin</code> / <code>admin123</code><br>
+                Doctor: <code>dr.sharma</code> / <code>doctor123</code>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

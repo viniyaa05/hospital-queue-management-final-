@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Queue Token</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}" class="no-print"></div>
+
+<div class="main-content" style="max-width:480px; margin:0 auto;">
+
+    <div th:if="${token != null}">
+        <div class="token-slip">
+            <div class="token-slip-header">
+                <div style="font-size:1.5rem;">🏥 Hospital Queue System</div>
+                <div style="opacity:0.85; font-size:0.88rem; margin-top:0.2rem;">Queue Token Slip</div>
+            </div>
+            <div class="token-slip-body">
+                <!-- Priority badge -->
+                <div class="text-center mb-1">
+                    <span class="badge badge-emergency"
+                          th:if="${token.priority.name() == 'EMERGENCY'}">🚨 EMERGENCY</span>
+                    <span class="badge badge-high"
+                          th:if="${token.priority.name() == 'HIGH'}">⭐ HIGH PRIORITY</span>
+                    <span class="badge badge-normal"
+                          th:if="${token.priority.name() == 'NORMAL'}">NORMAL</span>
+                </div>
+
+                <!-- Token number -->
+                <div class="token-number-display" th:text="${token.tokenNumber}">007</div>
+                <div class="token-code-display" th:text="${token.tokenCode}">CARD-007</div>
+
+                <!-- Info rows -->
+                <div class="token-info-row">
+                    <span>Patient Name</span>
+                    <span th:text="${token.patient.name}">–</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Department</span>
+                    <span th:text="${token.department.name}">–</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Counter</span>
+                    <span th:text="${token.counterType.displayName}">–</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Priority</span>
+                    <span th:text="${token.priority}">–</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Status</span>
+                    <span class="badge badge-waiting">WAITING</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Issued At</span>
+                    <span th:text="${#temporals.format(token.createdAt, 'dd MMM yyyy, hh:mm a')}">–</span>
+                </div>
+                <div class="token-info-row">
+                    <span>Date</span>
+                    <span th:text="${token.issueDate}">–</span>
+                </div>
+
+                <div style="background:#fff8e1; border-radius:6px; padding:0.75rem; margin-top:1rem; font-size:0.83rem; color:#856404; text-align:center;">
+                    📢 Please wait near the <strong th:text="${token.department.location ?: 'counter'}"></strong>.<br>
+                    Listen for your token number to be announced.
+                </div>
+            </div>
+        </div>
+
+        <div class="no-print" style="display:flex; gap:0.75rem; justify-content:center; margin-top:1.2rem;">
+            <a th:href="@{/queue/department/{id}(id=${token.department.id})}" class="btn btn-primary">
+                📋 View Queue
+            </a>
+            <a th:href="@{/patient/register}" class="btn btn-light">➕ New Patient</a>
+            <button onclick="window.print()" class="btn btn-light">🖨️ Print Slip</button>
+        </div>
+    </div>
+
+    <div th:if="${token == null}" class="empty-state card">
+        <div class="card-body text-center">
+            <div class="empty-icon">❓</div>
+            <p>Token not found.</p>
+            <a th:href="@{/patient/register}" class="btn btn-primary mt-2">Register Patient</a>
+        </div>
+    </div>
+
+</div>
+<div th:replace="~{fragments :: footer}" class="no-print"></div>
+</body>
+</html>

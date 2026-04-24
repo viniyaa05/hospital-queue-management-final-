@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ══════════════════════════════════════════
+     FRAGMENT: navbar
+     ══════════════════════════════════════════ -->
+<nav th:fragment="navbar" class="navbar">
+    <a href="/" class="navbar-brand">
+        <span>🏥</span> HospitalQ
+    </a>
+    <ul class="navbar-nav">
+        <li><a th:href="@{/queue/display}">Queue Board</a></li>
+        <li><a th:href="@{/patient/register}">Register Patient</a></li>
+        <li sec:authorize="hasRole('DOCTOR')"><a th:href="@{/doctor/dashboard}">Doctor Dashboard</a></li>
+        <li sec:authorize="hasRole('ADMIN')"><a th:href="@{/admin/dashboard}">Admin Panel</a></li>
+        <li sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <button type="submit" class="btn-logout">Logout</button>
+            </form>
+        </li>
+        <li sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}">Login</a>
+        </li>
+    </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     FRAGMENT: admin-sidebar
+     ══════════════════════════════════════════ -->
+<nav th:fragment="admin-sidebar" class="sidebar">
+    <div class="sidebar-title">Admin Panel</div>
+    <a th:href="@{/admin/dashboard}">📊 Dashboard</a>
+    <a th:href="@{/admin/departments}">🏢 Departments</a>
+    <a th:href="@{/admin/doctors}">👨‍⚕️ Doctors</a>
+    <a th:href="@{/admin/queue-overview}">📋 Queue Overview</a>
+    <div class="sidebar-sep"></div>
+    <a th:href="@{/admin/reports}">📈 Reports &amp; Analytics</a>
+    <div class="sidebar-sep"></div>
+    <a th:href="@{/queue/display}">🖥️ Public Display</a>
+    <a th:href="@{/patient/register}">➕ Register Patient</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     FRAGMENT: doctor-sidebar
+     ══════════════════════════════════════════ -->
+<nav th:fragment="doctor-sidebar" class="sidebar">
+    <div class="sidebar-title">Doctor Panel</div>
+    <a th:href="@{/doctor/dashboard}">📋 Dashboard</a>
+    <a th:href="@{/doctor/queue}">👥 Queue</a>
+    <div class="sidebar-sep"></div>
+    <a th:href="@{/queue/display}">🖥️ Public Display</a>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     FRAGMENT: flash-messages
+     ══════════════════════════════════════════ -->
+<div th:fragment="flash">
+    <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <div th:if="${error}"   class="alert alert-error"   th:text="${error}"></div>
+    <div th:if="${info}"    class="alert alert-info"    th:text="${info}"></div>
+    <div th:if="${warning}" class="alert alert-warning" th:text="${warning}"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FRAGMENT: footer
+     ══════════════════════════════════════════ -->
+<footer th:fragment="footer" class="footer">
+    Hospital Queue Management System &copy; 2024 &nbsp;|&nbsp;
+    Built with Spring Boot + Thymeleaf (No JavaScript)
+</footer>
+
+</html>

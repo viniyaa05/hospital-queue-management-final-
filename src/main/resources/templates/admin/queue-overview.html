@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="20">
+    <title>Queue Overview</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="layout">
+    <div th:replace="~{fragments :: admin-sidebar}"></div>
+    <div class="main-content">
+        <div class="page-title">
+            📋 Queue Overview (All Departments)
+            <div class="page-subtitle">Auto-refreshes every 20 seconds</div>
+        </div>
+
+        <div class="queue-board">
+            <div th:each="dept : ${departments}" class="queue-dept-card">
+                <div class="queue-dept-header">
+                    🏥 <span th:text="${dept.name}"></span>
+                </div>
+                <div class="queue-now-serving">
+                    <div class="queue-token-label">Now Serving</div>
+                    <div class="queue-token-big">–</div>
+                </div>
+                <div style="padding:0.75rem 1rem;">
+                    <div style="font-size:0.78rem; color:var(--muted); margin-bottom:0.3rem;">Location</div>
+                    <div style="font-size:0.88rem;" th:text="${dept.location ?: '—'}"></div>
+                    <div style="margin-top:0.75rem;">
+                        <a th:href="@{/queue/department/{id}(id=${dept.id})}" class="btn btn-sm btn-primary btn-block">
+                            View Queue →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" th:content="${refreshSeconds}">
+    <title th:text="${department?.name} + ' Queue'">Department Queue</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="main-content">
+
+    <!-- Counter tabs -->
+    <div class="d-flex align-center justify-between mb-2">
+        <div class="page-title" style="margin:0;" th:text="${department?.name} + ' Queue'">Queue</div>
+        <a th:href="@{/queue/display}" class="btn btn-light btn-sm">← All Departments</a>
+    </div>
+
+    <div class="counter-tabs">
+        <a th:each="c : ${counters}"
+           th:href="@{/queue/department/{id}(id=${department.id}, counter=${c})}"
+           th:text="${c.displayName}"
+           th:classappend="${c == selectedCounter} ? ' active' : ''"
+           class="counter-tab"></a>
+    </div>
+
+    <!-- Currently Serving -->
+    <div class="card" style="border-top: 4px solid var(--success);">
+        <div class="card-header">🟢 Now Serving — <span th:text="${selectedCounter.displayName}"></span></div>
+        <div class="card-body text-center">
+            <div th:if="${currentlyServing != null}">
+                <div class="token-number-display" style="font-size:5rem;"
+                     th:text="${currentlyServing.tokenNumber}">–</div>
+                <div class="token-code-display" th:text="${currentlyServing.tokenCode}">–</div>
+                <div class="text-muted" th:text="${currentlyServing.patient.name}">–</div>
+                <span class="badge badge-emergency mt-1" th:if="${currentlyServing.priority.name() == 'EMERGENCY'}">🚨 EMERGENCY</span>
+                <span class="badge badge-high mt-1"      th:if="${currentlyServing.priority.name() == 'HIGH'}">⭐ HIGH PRIORITY</span>
+            </div>
+            <div th:if="${currentlyServing == null}" class="empty-state">
+                <div class="empty-icon">💤</div>
+                <p>No patient currently being served</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting Queue -->
+    <div class="card">
+        <div class="card-header">
+            ⏳ Waiting Queue
+            <span style="margin-left:auto; font-size:0.82rem; color:var(--muted);"
+                  th:text="${queue.size()} + ' patient(s) waiting'"></span>
+        </div>
+        <div th:if="${queue.empty}" class="empty-state" style="padding:2rem;">
+            <div class="empty-icon">✅</div>
+            <p>Queue is empty — all patients served!</p>
+        </div>
+        <div class="table-wrap" th:if="${!queue.empty}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Token</th>
+                        <th>Patient</th>
+                        <th>Age</th>
+                        <th>Priority</th>
+                        <th>Waiting Since</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="t,i : ${queue}"
+                        th:style="${t.priority.name() == 'EMERGENCY'} ? 'background:#fff5f5;' : (${t.priority.name() == 'HIGH'} ? 'background:#fffde7;' : '')">
+                        <td th:text="${i.index + 1}">1</td>
+                        <td>
+                            <strong th:text="${t.tokenCode}">–</strong>
+                        </td>
+                        <td th:text="${t.patient.name}">–</td>
+                        <td th:text="${t.patient.age}">–</td>
+                        <td>
+                            <span class="badge badge-emergency" th:if="${t.priority.name() == 'EMERGENCY'}">🚨 EMERGENCY</span>
+                            <span class="badge badge-high"      th:if="${t.priority.name() == 'HIGH'}">⭐ HIGH</span>
+                            <span class="badge badge-normal"    th:if="${t.priority.name() == 'NORMAL'}">NORMAL</span>
+                        </td>
+                        <td th:text="${#temporals.format(t.createdAt, 'hh:mm a')}">–</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="text-align:center; color:var(--muted); font-size:0.8rem; margin-top:0.5rem;">
+        Auto-refreshes every <span th:text="${refreshSeconds}"></span> seconds
+    </div>
+
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

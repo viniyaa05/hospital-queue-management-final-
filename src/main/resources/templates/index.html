@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Queue Management System</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div style="background: linear-gradient(135deg,#1a6eb5,#134f85); color:#fff; padding: 3.5rem 2rem; text-align:center;">
+    <div style="font-size:3.5rem; margin-bottom:0.5rem;">🏥</div>
+    <h1 style="font-size:2.2rem; font-weight:800; margin-bottom:0.5rem;">Hospital Queue Management System</h1>
+    <p style="font-size:1.05rem; opacity:0.88; max-width:560px; margin:0 auto 1.8rem;">
+        Streamlined patient queue management with priority support, multi-counter queues, and real-time tracking.
+    </p>
+    <div style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+        <a th:href="@{/patient/register}" class="btn btn-lg" style="background:#fff;color:#1a6eb5;font-weight:700;">
+            ➕ Register Patient
+        </a>
+        <a th:href="@{/queue/display}" class="btn btn-lg" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.4);">
+            🖥️ View Queue Board
+        </a>
+        <a th:href="@{/login}" class="btn btn-lg" style="background:rgba(255,255,255,0.18);color:#fff;border:1px solid rgba(255,255,255,0.4);">
+            🔐 Staff Login
+        </a>
+    </div>
+</div>
+
+<div class="main-content" style="max-width:960px; margin:0 auto;">
+    <div class="stats-grid mt-3">
+        <div class="stat-card">
+            <div class="stat-number">8</div>
+            <div class="stat-label">Departments</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Service Counters</div>
+        </div>
+        <div class="stat-card orange">
+            <div class="stat-number">🟡</div>
+            <div class="stat-label">Priority Queue</div>
+        </div>
+        <div class="stat-card teal">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">Appointments</div>
+        </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:1.2rem;" class="mt-2">
+        <div class="card">
+            <div class="card-header">👥 For Patients</div>
+            <div class="card-body">
+                <p class="fs-sm text-muted mb-2">Register and get your queue token instantly.</p>
+                <a th:href="@{/patient/register}" class="btn btn-primary btn-block">Register &amp; Get Token</a>
+                <a th:href="@{/patient/appointment}" class="btn btn-light btn-block mt-1">Book Appointment</a>
+                <a th:href="@{/patient/search}" class="btn btn-light btn-block mt-1">Search Patient</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">👨‍⚕️ For Doctors</div>
+            <div class="card-body">
+                <p class="fs-sm text-muted mb-2">Login to manage your department queue.</p>
+                <a th:href="@{/login}" class="btn btn-primary btn-block">Doctor Login</a>
+                <a th:href="@{/queue/display}" class="btn btn-light btn-block mt-1">Live Queue Board</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">🛡️ For Admins</div>
+            <div class="card-body">
+                <p class="fs-sm text-muted mb-2">Manage hospital operations and analytics.</p>
+                <a th:href="@{/login}" class="btn btn-primary btn-block">Admin Login</a>
+                <a th:href="@{/admin/reports}" class="btn btn-light btn-block mt-1">View Reports</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>

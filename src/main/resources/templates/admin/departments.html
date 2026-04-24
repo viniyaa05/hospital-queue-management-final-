@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><title>Manage Departments</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="page-wrapper">
+<div th:replace="~{fragments :: navbar}"></div>
+<div class="layout">
+    <div th:replace="~{fragments :: admin-sidebar}"></div>
+    <div class="main-content">
+        <div class="page-title">🏢 Manage Departments</div>
+        <div th:replace="~{fragments :: flash}"></div>
+
+        <!-- Add Department Form -->
+        <div class="card">
+            <div class="card-header">➕ Add New Department</div>
+            <div class="card-body">
+                <form th:action="@{/admin/departments/add}" method="post">
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label class="form-label">Department Name *</label>
+                            <input type="text" class="form-control" name="name" required placeholder="e.g. Cardiology">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" name="description" placeholder="Brief description">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Location</label>
+                            <input type="text" class="form-control" name="location" placeholder="e.g. Block A - Floor 1">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">➕ Add Department</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Departments Table -->
+        <div class="card">
+            <div class="card-header">All Departments (<span th:text="${departments.size()}"></span>)</div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>ID</th><th>Name</th><th>Description</th><th>Location</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="dept : ${departments}">
+                            <td th:text="${dept.id}"></td>
+                            <td><strong th:text="${dept.name}"></strong></td>
+                            <td th:text="${dept.description ?: '—'}"></td>
+                            <td th:text="${dept.location ?: '—'}"></td>
+                            <td>
+                                <span class="badge badge-completed" th:if="${dept.active}">Active</span>
+                                <span class="badge badge-skipped"  th:if="${!dept.active}">Inactive</span>
+                            </td>
+                            <td>
+                                <form th:action="@{/admin/departments/deactivate/{id}(id=${dept.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm btn-danger"
+                                            th:if="${dept.active}"
+                                            onclick="return confirm('Deactivate this department?')">Deactivate</button>
+                                </form>
+                                <span th:if="${!dept.active}" class="text-muted fs-sm">Deactivated</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments :: footer}"></div>
+</body>
+</html>
