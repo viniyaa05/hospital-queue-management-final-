@@ -1,5 +1,5 @@
 # Hospital Queue Management System
-### Java Spring Boot · No JavaScript · Thymeleaf · MySQL · JPA
+### Java Spring Boot . Thymeleaf · h2· JPA
 
 ---
 
@@ -14,10 +14,7 @@
 | Doctor Dashboard | View queue, Call Next, Complete/Skip |
 | Admin Panel | Manage Doctors & Departments |
 | Appointment System | Book future appointments, convert to token |
-| Reports & Analytics | Daily patients, avg wait time, tokens/dept |
-| Queue Display Board | Public screen with meta-refresh (No JS!) |
-| Spring Security | BCrypt login for Doctor & Admin roles |
-| No JavaScript | 100% server-side rendering via Thymeleaf |
+| Reports & Analytics | Daily patients, avg wait time, tokens/dept
 
 ---
 
@@ -34,7 +31,7 @@ Default Login Credentials
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 hospital-queue-system/
